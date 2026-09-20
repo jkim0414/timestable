@@ -50,7 +50,7 @@ export type PlacementVerdict = 'known' | 'shaky' | 'idk' | 'wrong'
 export function placeCard(id: FactId, correct: boolean, seconds: number, now = Date.now(), idk = false): { card: Card; verdict: PlacementVerdict } {
   const base = newCard(id)
   if (correct) {
-    const interval = Math.round((2 + Math.random() * 2) * 10) / 10 // 2–4 days, staggered
+    const interval = Math.round((3 + Math.random() * 2) * 10) / 10 // 3–5 days, staggered (≥3 shows as Growing)
     return {
       verdict: seconds < FAST_SECONDS ? 'known' : 'shaky',
       card: { ...base, interval, ease: 2.5, due: now + interval * DAY, reps: 2, streak: 2, times: [Math.min(seconds, 30)], last: now, days: 1, lastDay: localDay(now) }

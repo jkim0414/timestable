@@ -30,6 +30,17 @@ export default function Home({ state, go }: { state: State; go: (s: Screen) => v
   }
 
   const [installEvt, setInstallEvt] = useState<BeforeInstallPromptEvent | null>(null)
+  // iOS Safari never fires beforeinstallprompt, so show manual instructions until the app runs installed.
+  const [iosHint, setIosHint] = useState<boolean>(() => {
+    try {
+      const ua = navigator.userAgent
+      const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      const standalone = (navigator as unknown as { standalone?: boolean }).standalone === true || window.matchMedia('(display-mode: standalone)').matches
+      const dismissed = localStorage.getItem('times-garden.ios-hint') === 'dismissed'
+      return isIOS && !standalone && !dismissed
+    } catch { return false }
+  })
+  const dismissIosHint = () => { setIosHint(false); try { localStorage.setItem('times-garden.ios-hint', 'dismissed') } catch { /* ignore */ } }
   useEffect(() => {
     const h = (e: Event) => { e.preventDefault(); setInstallEvt(e as BeforeInstallPromptEvent) }
     window.addEventListener('beforeinstallprompt', h)
@@ -96,6 +107,16 @@ export default function Home({ state, go }: { state: State; go: (s: Screen) => v
       {installEvt && (
         <button className="chip" onClick={() => installEvt.prompt()}>📲 Add to home screen</button>
       )}
+
+      {iosHint && (
+        <div className="install-hint">
+          <div>
+            <b>Add Times Garden to your home screen</b>
+            <div className="tiny">Tap <ShareIcon /> Share, then <b>Add to Home Screen</b>. It'll open full-screen and work offline.</div>
+          </div>
+          <button className="icon-btn" aria-label="Dismiss" onClick={dismissIosHint}>✕</button>
+        </div>
+      )}
     </div>
   )
 }
@@ -105,4 +126,13 @@ export default function Home({ state, go }: { state: State; go: (s: Screen) => v
 function isRecent(day: string) {
   const d = new Date(day + 'T12:00:00')
   return Date.now() - d.getTime() < 2.5 * 86400000
+}
+
+/** Safari's share glyph: a box with an arrow out of the top. */
+function ShareIcon() {
+  return (
+    <svg className="share-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+      <path d="M12 3v12M8 7l4-4 4 4M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
 }

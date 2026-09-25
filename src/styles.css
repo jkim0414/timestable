@@ -268,3 +268,7 @@ p { margin: 0; line-height: 1.45; }
 .hold-btn.holding::after { content: ''; position: absolute; inset: 0; background: rgba(99, 199, 106, 0.35); transform-origin: left; animation: fillx 1.2s linear forwards; }
 @keyframes fillx { from { transform: scaleX(0) } to { transform: scaleX(1) } }
 .small-btn { padding: 10px 14px; min-height: 44px; font-size: 1rem; }
+
+.install-hint { display: flex; align-items: center; gap: 12px; background: #fff; border: 2px solid #c9d6f2; border-radius: 16px; padding: 12px 14px; }
+.install-hint > div { flex: 1; }
+.share-icon { vertical-align: -3px; color: var(--primary); }

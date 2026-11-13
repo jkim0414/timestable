@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Screen } from '../App'
-import { FACTS, isFactUnlocked, unlockedTables } from '../engine/facts'
+import { unlockedTables } from '../engine/facts'
 import { derive, State } from '../engine/store'
 import { sfx } from '../engine/audio'
 
@@ -8,11 +8,6 @@ interface BeforeInstallPromptEvent extends Event { prompt: () => Promise<void> }
 
 export default function Home({ state, go }: { state: State; go: (s: Screen) => void }) {
   const d = derive(state)
-  const now = Date.now()
-  const due = FACTS.filter((f) => isFactUnlocked(f, state.stagesOpen)).filter((f) => {
-    const c = state.cards[f.id]
-    return !c || c.due <= now
-  }).length
   const goalDone = d.questsToday
   const goal = state.settings.dailyGoal
   const tables = unlockedTables(state.stagesOpen)
@@ -76,6 +71,7 @@ export default function Home({ state, go }: { state: State; go: (s: Screen) => v
           <div className="stat-big">🔥 {d.streakDays}</div>
           <div className="stat-label">Day streak</div>
           <div className="stat-sub" title="Streak savers: a missed day uses one instead of breaking the streak">🛡️ {d.freezes} saver{d.freezes === 1 ? '' : 's'}</div>
+          {d.bestStreak > 0 && <div className="stat-sub" title="Your longest streak so far">🏆 Best: {d.bestStreak}</div>}
         </div>
         <div className="stat">
           <div className="stat-big">{goalDone >= goal ? '🏅' : '🎯'} {Math.min(goalDone, goal)}/{goal}</div>
@@ -91,7 +87,7 @@ export default function Home({ state, go }: { state: State; go: (s: Screen) => v
         <span className="play-icon">🚀</span>
         <span>
           <span className="play-title">Play a Quest!</span>
-          <span className="play-sub">{due > 0 ? `${due} flower${due === 1 ? '' : 's'} need watering` : 'Your garden is happy! Practise anyway?'}</span>
+          <span className="play-sub">{goalDone >= goal ? 'Goal done today! Play another?' : "Let's grow your garden!"}</span>
         </span>
       </button>
 

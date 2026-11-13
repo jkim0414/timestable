@@ -56,6 +56,7 @@ export default function Parent({ state, dispatch, sync, onBack, onPlacement }: {
         <div className="kv"><span>Misses, last 7 quests</span><b>{recent.length ? `${wrongTotal} wrong · ${idkTotal} "don't know"` : '—'}</b></div>
         <div className="kv"><span>Total answered</span><b>{d.totalAnswered}</b></div>
         <div className="kv"><span>Day streak</span><b>{d.streakDays}</b></div>
+        <div className="kv"><span>Best streak</span><b>{d.bestStreak}</b></div>
         <div className="kv"><span>Streak savers</span><b>{d.freezes} of {d.freezeCap}</b></div>
         <div className="kv"><span>Tables open</span><b>{TABLE_ORDER.slice(0, state.stagesOpen).join(', ')}</b></div>
         <div className="stage-counts">

@@ -41,7 +41,10 @@ accounts. Every install gets a family code, and progress syncs across devices un
 - Streak and streak savers. One saver is earned every 3 streak days (hold 3, plus 1 capacity per 30 practice days,
   max 5). A missed day spends one automatically instead of breaking the streak. Today never counts as missed until
   it's over. Days are the device's local calendar days. The streak is derived from practice history, so it syncs
-  and applies retroactively.
+  and applies retroactively. The home screen also shows the best streak ever reached, so a break doesn't erase
+  the record.
+- The home screen never shows how many facts are due or says the garden needs attention. The schedule decides
+  what a quest asks; the child just sees an invitation to play.
 - Badges: first quest, perfect, lightning (8 quick answers), 3/7/30-day streaks, saved streak, 100 and 500 correct,
   one per mastered table, golden garden. Badges implied by state (streaks, totals, tables) are awarded on open, not
   only at the end of a quest.

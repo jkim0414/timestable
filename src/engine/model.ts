@@ -86,6 +86,8 @@ export interface Derived {
   totalAnswered: number
   questsToday: number
   streakDays: number
+  /** Longest streak ever reached, so a break never erases the record. */
+  bestStreak: number
   practiceDays: Set<string>
   /** Streak savers in hand: earned every FREEZE_EVERY practice days, spent automatically on a missed day. */
   freezes: number
@@ -114,7 +116,7 @@ export function derive(state: Pick<State, 'contrib'>, today = dateKey()): Derive
   // streak and every FREEZE_EVERY days earns a saver; a missed day spends a saver if there is one, otherwise
   // the streak resets. Today doesn't count as missed until it's over.
   const freezeCap = freezeCapFor(practiceDays.size)
-  let streakDays = 0, freezes = 0
+  let streakDays = 0, freezes = 0, bestStreak = 0
   let lastFrozenDay: string | null = null
   const sorted = [...practiceDays].sort()
   if (sorted.length) {
@@ -122,6 +124,7 @@ export function derive(state: Pick<State, 'contrib'>, today = dateKey()): Derive
     for (let k = dateKey(cursor); k <= today; cursor.setDate(cursor.getDate() + 1), k = dateKey(cursor)) {
       if (practiceDays.has(k)) {
         streakDays++
+        bestStreak = Math.max(bestStreak, streakDays)
         if (streakDays % FREEZE_EVERY === 0 && freezes < freezeCap) freezes++
       } else if (k === today) {
         // still in progress
@@ -136,7 +139,7 @@ export function derive(state: Pick<State, 'contrib'>, today = dateKey()): Derive
   const lv = levelFromXp(xp)
   return {
     xp, level: lv.level, levelProgress: lv.progress, xpToNext: lv.need - lv.into,
-    totalCorrect, totalAnswered, questsToday, streakDays, practiceDays, freezes, freezeCap, lastFrozenDay
+    totalCorrect, totalAnswered, questsToday, streakDays, bestStreak, practiceDays, freezes, freezeCap, lastFrozenDay
   }
 }
 
